@@ -1,40 +1,81 @@
-This is a Kotlin Multiplatform project targeting Android, Desktop (JVM).
+# 1단계 - 칸반 보드 태스크(카드)
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+## 칸반 보드 요소
 
-### Build and Run Android Application
+### 1. 컨테이너
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+- [x] 보드의 각 요소를 배치할 컨테이너를 Box로 선언
 
-### Build and Run Desktop (JVM) Application
+### 2. 제목
 
-To build and run the development version of the desktop app, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:run
-  ```
+- [x] 보드의 제목을 표시할 텍스트 컴포넌트
+- [x] 컨테이너의 가로 길이보다 표시할 문자열이 길 경우 문자열의 뒷부분을 말줄임표로 대치
+- [x] 줄넘김을 허용하지 않음
+
+### 3. 중간 내용
+
+- [x] 보드에 중간 내용을 표시할 텍스트 컴포넌트
+- [x] 컨테이너의 가로 길이보다 표시할 문자열이 길 경우 문자열의 뒷부분을 말줄임표로 대치
+- [x] 줄넘김은 최대 2줄까지 허용
+
+### 4. 태그
+
+- [x] 태그를 표시할 컨테이너
+    - [x] flowRow로 선언
+- [x] 각 태그의 내용을 표시할 텍스트 컴포넌트
+    - [x] 최대 글자수는 5자로 제한
+- [x] 태그의 최대 개수는 5개로 제한
+
+### 5. 작성자
+
+- [x] 아이콘과 사용자 이름을 표시할 컨테이너
+- [x] 작성자의 이름이 컨테이너의 가로 길이보다 길 경우 문자열의 뒷부분을 말줄임표로 대치
+- [x] 줄넘김을 허용하지 않음
+
+# 함수 설명
+
+## KanbanBoardMax
+
+칸반 보드의 각 요소가 최대일 경우를 표현한 함수
+
+## KanbanBoardCase1
+
+칸반 보드의 각 요소가 전부 존재하는 상태를 표현한 함수
+
+## KanbanBoardCase2
+
+칸반 보드의 요소 중 중간 내용이 존재하지 않는 상태를 표현한 함수
+
+## KanbanBoardCase3
+
+칸반 보드의 요소 중 태그가 존재하지 않는 상태를 표현한 함수
+
+## KanbanBoardCase4
+
+칸반 보드의 요소 중 중간 내용과 태그가 존재하지 않는 상태를 표현한 함수
+
+# 페어 프로그래밍
+@first-woosun 투핸더와 프롬프터와 네비게이터를 서로 번갈아가며 미션을 수행함
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+# 2단계 - 칸반 보드 태스크(리팩터링)
+
+# 피드백 반영 내용
+
+- [x] EOF 경고 없애기
+- [x] Modifier 순서에 대하여
+- [x] size의 활용에 대하여
+- [x] 5글자 제한 로직
+- [x] 같은 색상 중복 사용 문제
+- [x] text = text 테스트가 좋지 않은 이유
+- [x] 의존성을 추가한 이유
+- [x] 하드코딩에 대한 문제
+
+# 테스트 코드
+## BoardTest.kt
+
+- 모든 필드가 있는 카드: 칸반 보드의 제목, 중간 내용, 태그, 작성자가 모두 존재하는지 검증하는 테스트 함수
+- 중간 내용 필드만 없는 카드: 칸반 보드의 제목, 태그, 작성자가 모두 존재하는지 검증하는 테스트 함수
+- 태그 필드만 없는 카드: : 칸반 보드의 제목, 중간 내용, 작성자가 모두 존재하는지 검증하는 테스트 함수
+- 중간 내용과 태그 필드가 없는 카드: : 칸반 보드의 제목, 작성자가 모두 존재하는지 검증하는 테스트 함수
