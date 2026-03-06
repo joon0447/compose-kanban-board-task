@@ -1,40 +1,53 @@
-This is a Kotlin Multiplatform project targeting Android, Desktop (JVM).
+# 레벨1 - 칸반 보드 태스크(카드)
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
-
-### Build and Run Android Application
-
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
-
-### Build and Run Desktop (JVM) Application
-
-To build and run the development version of the desktop app, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:run
-  ```
+## 미션 목표
+[디자인 시안](https://www.figma.com/design/3aBG3UfkTwmHM8BnPyahtT/8%EA%B8%B0-Android-%EB%A0%88%EB%B2%A81-%EB%AF%B8%EC%85%98-%EB%94%94%EC%9E%90%EC%9D%B8?node-id=0-1&p=f)을 참고하여 칸반 보드용 태스크 카드를 구현합니다.
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+## 구현할 기능 및 명세 정리
+
+리뷰어분들이 어떤 의도로 각 컴포넌트를 설계하고 속성을 지정했는지 쉽게 파악하실 수 있도록, 초기 요구사항과 이를 바탕으로 구체화한 컴포넌트 명세로 정리했습니다.
+
+### 1. 카드 프레임
+* 요구사항 분석: 배경이 하얀색이고 곡률과 외곽선이 존재하는 카드의 뼈대입니다.
+* UI 명세:
+  - 배경색: 하얀색
+  - 테두리: 1px, 색상 gray
+  - 모서리 곡률: 10px
+  - 내부 여백: 17px
+  - 내부 컴포넌트 간 간격: 12px
+
+### 2. 카드 제목
+* 요구사항 분석: 카드의 제목을 표시하며, 길이가 길어 영역을 벗어나면 말줄임 처리를 합니다.
+* UI 명세:
+  - 텍스트 속성: 폰트 사이즈 16, 굵기 Bold
+  - 줄 수 제한: 최대 1줄
+  - 초과 처리: 말줄임
+
+### 3. 카드 본문
+* 요구사항 분석: 카드의 상세 본문을 표시합니다. 내용이 없을 경우 생략 가능하며, 길이가 길면 최대 2줄까지만 노출하고 말줄임 처리합니다.
+* UI 명세:
+  - 상태 처리: 데이터가 없으면 렌더링 생략
+  - 텍스트 속성: 폰트 사이즈 14px, 색상 DarkGray
+  - 줄 수 제한: 최대 2줄
+  - 초과 처리: 말줄임
+
+### 4. 태그 영역
+* 요구사항 분석: 카드와 연관된 태그들을 표시합니다. 태그 당 글자 수는 최대 5자로 제한합니다. 태그는 최대 5개까지만 노출하며, 데이터가 없을 경우 렌더링을 생략합니다.
+* UI 명세:
+  - 상태 처리: 데이터가 없으면 렌더링 생략
+  - 데이터 제한: 최대 5개 노출
+  - 스타일: 배경색 gray, 텍스트 색상 Black
+  - 레이아웃 구조: 공간에 따라 자연스럽게 줄바꿈이 되는 레이아웃
+  - 레이아웃 간격: 아이템 간 가로 간격 8px, 세로 간격 4px
+
+### 5. 프로필 정보
+* 요구사항 분석: 카드 하단에 담당자의 정보인 프로필 사진, 크루 네임을 표시하며, 본문 영역과 구분하기 위한 선이 존재합니다.
+* UI 명세:
+  - 구분선: 영역 상단 테두리 1px, 색상 lightGray
+  - 프로필 이미지: 크기 24px
+  - 크루 네임 텍스트: 
+    - 폰트 사이즈 14px
+    - 최대 1줄, 초과 시 말줄임 처리
+  - 레이아웃 간격: 프로필 이미지와 크루 네임 사이의 간격 8px
