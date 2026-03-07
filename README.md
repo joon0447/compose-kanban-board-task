@@ -1,40 +1,45 @@
-This is a Kotlin Multiplatform project targeting Android, Desktop (JVM).
-
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
-
-### Build and Run Android Application
-
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
-
-### Build and Run Desktop (JVM) Application
-
-To build and run the development version of the desktop app, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:run
-  ```
+# 🚀 1단계 - 칸반 보드 태스크(카드)
 
 ---
+## 진행 방식
+- 미션은 과제 진행 요구 사항, 기능 요구 사항, 프로그래밍 요구 사항 세 가지로 구성되어 있다.
+- 세 개의 요구 사항을 만족하기 위해 노력한다. 특히 기능을 구현하기 전에 기능 목록을 만들고, 기능 단위로 커밋 하는 방식으로 진행한다.
+- 기능 요구 사항에 기재되지 않은 내용은 스스로 판단하여 구현한다.
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+## 과제 진행 요구 사항
+- 기능을 구현하기 전 README.md에 구현할 기능 목록을 정리해 추가한다.
+- Git의 커밋 단위는 앞 단계에서 README.md에 정리한 기능 목록 단위로 추가한다.
+- AngularJS Git Commit Message Conventions을 참고해 커밋 메시지를 작성한다.
+
+## 프로그래밍 요구 사항
+- ViewModel, Hilt 등은 이 미션에서 활용하지 않는다. 컴포즈 학습에 집중하자.
+- Android 의존성도 당장 고려하지 않는다. 컴포즈 학습에 집중하자.
+
+## 가이드
+[![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](https://www.figma.com/design/3aBG3UfkTwmHM8BnPyahtT/8%EA%B8%B0-Android-%EB%A0%88%EB%B2%A81-%EB%AF%B8%EC%85%98-%EB%94%94%EC%9E%90%EC%9D%B8?node-id=21001-1106&t=m5lOa3Vx35utJb9V-0)
+
+## 구현 기능
+1. 제목 컴포넌트 구현
+    - 제목 텍스트의 라인을 최대 1줄로 제한한다.
+    - 오버플로우 발생 시 ...으로 표시한다.
+    - Input이 빈 값일 때 기본 값으로 “LazyColumn 컴포넌트 구현”을 화면에 띄운다.
+2. 내용 컴포넌트 구현
+    - 내용 텍스트의 라인을 최대 2줄로 제한한다.
+    - 오버플로우 발생 시 ...으로 표시한다.
+    - null 체크를 통해 Input이 빈 값이 아닐때만 화면에 띄운다.
+3. 태그 컴포넌트 구현
+    - 태그 글자 수가 5글자를 넘어간다면, 5글자만 화면에 띄운다.
+    - 태그 모서리 쉐입을 라운드로 설정한다.
+4. 태그 FlowRow 컴포넌트 구현
+    - 태그 개수가 5개를 넘어간다면, 5개만 화면에 띄운다.
+5. 프로필 정보 컴포넌트 구현
+    - 프로필 Icon
+    - 프로필 이름
+        - 프로필 이름의 라인 최대 1줄로 제한한다.
+        - 오버플로우 발생 시 ...으로 표시한다.
+6. 카드 컴포넌트 구현
+    - 카드 너비 286px으로 고정한다.
+    - 내용 컴포넌트와 프로필 정보 컴포넌트 사이에 구분선을 추가한다.
+7. 칸반보드 컴포넌트 구현
+    - 칸반 카드 모서리 쉐입을 라운드로 설정하고, 테두리를 추가한다.
+    - 내부 컴포넌트 배치 간격을 12px로 설정한다.
