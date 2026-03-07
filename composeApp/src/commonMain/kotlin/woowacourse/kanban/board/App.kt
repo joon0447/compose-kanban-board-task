@@ -1,44 +1,64 @@
 package woowacourse.kanban.board
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import kanbanboard.composeapp.generated.resources.Res
-import kanbanboard.composeapp.generated.resources.compose_multiplatform
-import org.jetbrains.compose.resources.painterResource
+import androidx.compose.ui.unit.dp
+import woowacourse.kanban.board.data.TaskCardData
+import woowacourse.kanban.board.task.TaskCard
+
 
 @Composable
-@Preview
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
+fun AppPreview() {
+    App()
+}
+
+@Composable
 fun App() {
     MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
         Column(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .background(Color.White)
+                .padding(horizontal = 62.5.dp, vertical = 60.dp)
                 .safeContentPadding()
                 .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(18.5.dp),
         ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(18.5.dp),
+            ) {
+                TaskCardData.tasks.take(4).forEach { task ->
+                    TaskCard(
+                        title = task.title,
+                        contents = task.contents,
+                        tagNames = task.tagNames,
+                        contactName = task.contactName,
+                    )
+                }
+
             }
-            AnimatedVisibility(showContent) {
-                Image(painterResource(Res.drawable.compose_multiplatform), null)
+
+            Row {
+                val maxTask = TaskCardData.tasks.last()
+                TaskCard(
+                    title = maxTask.title,
+                    contents = maxTask.contents,
+                    tagNames = maxTask.tagNames,
+                    contactName = maxTask.contactName,
+                )
             }
+
         }
     }
 }
+
