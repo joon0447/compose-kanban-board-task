@@ -14,7 +14,6 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsNotEnabled
-import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
@@ -44,7 +43,7 @@ class LayoutBasicsTest {
                 color = Color.Blue,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.SansSerif
+                fontFamily = FontFamily.SansSerif,
             )
         }
 
@@ -59,7 +58,7 @@ class LayoutBasicsTest {
         // given
         setContent {
             Column(
-                modifier = Modifier.testTag("이름")
+                modifier = Modifier.testTag("이름"),
             ) {
                 // 바꿔 보세요!
                 Text(text = "깜포즈", color = Color.Blue)
@@ -86,7 +85,7 @@ class LayoutBasicsTest {
                     enabled = false
                 },
                 enabled = enabled,
-                modifier = Modifier.testTag("버튼")
+                modifier = Modifier.testTag("버튼"),
             ) {
                 Text(text = "클릭해주세요")
             }
@@ -98,5 +97,14 @@ class LayoutBasicsTest {
 
         // then
         button.assertIsNotEnabled()
+    }
+
+    @Test
+    fun `버튼 클릭 시 체크 상태 노출 여부 확인`() = runComposeUiTest {
+        // given
+        var checked by mutableStateOf(true)
+        setContent { CheckerView(check = { }, checked = checked) }
+
+        onNodeWithText("체크됨!").assertExists()
     }
 }

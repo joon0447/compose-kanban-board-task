@@ -14,49 +14,56 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import woowacourse.kanban.board.CustomColor
-
+import woowacourse.kanban.board.AppColors
+import woowacourse.kanban.board.DefaultValue
+import woowacourse.kanban.board.model.TaskCardData
 
 @Preview
 @Composable
-fun TaskCardPreview() {
+private fun TaskCardPreview() {
     TaskCard(
-        title = "LazyColumn 컴포넌트 구현",
-        script = "세로 스크롤 가능한 리스트 컴포넌트를 만들고 성능 최적화를 적용합니다.",
-        tags = listOf("컴포넌트", "성능"),
-        nickname = "다이노",
+        data = TaskCardData(
+            title = "LazyColumn 컴포넌트 구현",
+            script = "세로 스크롤 가능한 리스트 컴포넌트를 만들고 성능 최적화를 적용합니다.",
+            tags = listOf("컴포넌트", "성능"),
+            nickname = "다이노",
+        ),
     )
 }
 
 @Composable
 fun TaskCard(
-    title: String,
-    script: String? = null,
-    tags: List<String>? = null,
-    nickname: String,
+    data: TaskCardData,
+    modifier: Modifier = Modifier,
+    maxTagCount: Int = DefaultValue.MAX_TAGS,
+    maxTagTextLength: Int = DefaultValue.TAG_MAX_TEXT_LENGTH,
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .width(286.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         ),
-        border = BorderStroke(1.dp, CustomColor.CARD_BORDER.color),
+        border = BorderStroke(1.dp, AppColors.CardBorder),
         shape = RoundedCornerShape(10.dp),
     ) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .padding(17.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Title(title)
-            Script(script)
-            Tags(tags)
+            Title(data.title)
+            Script(data.script)
+            Tags(
+                tags = data.tags,
+                maxTagCount = maxTagCount,
+                maxTagTextLength = maxTagTextLength,
+            )
             HorizontalDivider(
                 thickness = 1.dp,
-                color = CustomColor.DIVIDER.color
+                color = AppColors.Divider,
             )
-            Profile(nickname)
+            Profile(data.nickname)
         }
     }
 }
