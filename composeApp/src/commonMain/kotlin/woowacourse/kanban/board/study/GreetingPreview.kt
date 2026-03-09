@@ -94,29 +94,19 @@ fun IconButtonExample() {
 @Preview
 fun SimpleBox() {
     Box(
-        modifier = Modifier.size(200.dp)
-            .background(Color.White),
+        modifier = Modifier.size(200.dp).background(Color.White),
     ) {
         Box(
-            modifier = Modifier
-                .size(50.dp)
-                .background(Color.Red)
-                .align(Alignment.TopStart),
+            modifier = Modifier.size(50.dp).background(Color.Red).align(Alignment.TopStart),
         )
 
         Box(
-            modifier = Modifier
-                .size(50.dp)
-                .background(Color.Yellow)
-                .align(Alignment.Center),
+            modifier = Modifier.size(50.dp).background(Color.Yellow).align(Alignment.Center),
         )
 
 
         Box(
-            modifier = Modifier
-                .size(50.dp)
-                .background(Color.Green)
-                .align(Alignment.BottomEnd),
+            modifier = Modifier.size(50.dp).background(Color.Green).align(Alignment.BottomEnd),
         )
     }
 }
