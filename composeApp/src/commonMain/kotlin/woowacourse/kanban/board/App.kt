@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,41 +22,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import woowacourse.kanban.board.constant.*
 
 @Composable
 fun App() {
-    CardBoardView()
-}
 
-@Composable
-@Preview(showBackground = false)
-fun CardBoardView() {
-    val testDataCollection = listOf(
-        CardData(EXAMPLE_TITLE, EXAMPLE_CONTENT, listOf("컴포넌트", "성능"), EXAMPLE_WRITER),
-        CardData(EXAMPLE_TITLE, null, listOf("컴포넌트", "성능"), EXAMPLE_WRITER),
-        CardData(EXAMPLE_TITLE, EXAMPLE_CONTENT, listOf(), EXAMPLE_WRITER),
-        CardData(EXAMPLE_TITLE,null, listOf(), EXAMPLE_WRITER),
-        CardData(MAX_TITLE, MAX_CONTENT, listOf("너무너무", "긴 태그", "최대로", "5자까지", "5개제한임"), MAX_WRITER)
-    )
-
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(items = testDataCollection) { card ->
-            KanbanBoardCard(card)
-        }
-    }
 }
 
 // KanbanBoardTaskCard 컴포넌트
 @Composable
-fun KanbanBoardCard(cardData: CardData) {
+fun KanbanBoardCard(modifier: Modifier, cardData: CardData) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .border(
                 width = 1.dp,
                 color = Color(CARD_BACKGROUND_COLOR),
@@ -68,107 +47,143 @@ fun KanbanBoardCard(cardData: CardData) {
             .clip(RoundedCornerShape(10.dp))
             .background(color = Color(BOARD_BACKGROUND_COLOR))
             .padding(17.dp)
+            .testTag(CARD_BODY_TEST)
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(17.dp)) {
             // 제목 컴포넌트 선언부
-            CardTitle(cardData.title)
+            CardTitle(Modifier, cardData.title)
 
             // 본문 컴포넌트 선언부
-            CardContent(cardData.content)
+            CardContent(modifier, cardData.content)
 
             // 태그 컴포넌트 선언부
-            CardTags(cardData.tags.toList())
+            CardTags(Modifier, cardData.tags.toList())
 
             // 구분선
             HorizontalDivider(thickness = 2.dp)
 
             // 작성자 컴포넌트 선언부
-            CardWriter(cardData.writer)
+            CardWriterProfile(Modifier, cardData.writer)
         }
+    }
+}
+
+@Composable
+private fun TextComponent(
+    modifier: Modifier,
+    text: String,
+    maxLines: Int = DEFAULT_MAX_LINES,
+    overflow: TextOverflow = TextOverflow.Ellipsis,
+    fontSize: Int,
+    color: Long
+) {
+    Box (
+        modifier = modifier
+    ){
+        Text(
+            text = text,
+            maxLines = maxLines,
+            overflow = overflow,
+            fontSize = fontSize.sp,
+            color = Color(color),
+        )
     }
 }
 
 // title 컴포넌트 생성 함수
 @Composable
-fun CardTitle(title: String) {
-    Box {
-        Text(
-            title,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            fontSize = 16.sp,
-            color = Color(TITLE_COLOR),
-        )
-    }
+private fun CardTitle(modifier: Modifier, title: String) {
+    TextComponent(
+        modifier = modifier.testTag(CARD_TITLE_TEST),
+        text = title,
+        overflow = TextOverflow.Ellipsis,
+        fontSize = TITLE_FONT_SIZE,
+        color = TITLE_COLOR
+    )
 }
 
 // content 컴포넌트 생성 함수
 @Composable
-fun CardContent(description: String?) {
-    if (description != null) {
-        Box {
-            Text(
-                description,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                fontSize = 14.sp,
-                color = Color(DESCRIPTION_COLOR),
-            )
-        }
+private fun CardContent(modifier: Modifier, content: String?) {
+    if (content != null) {
+        TextComponent(
+            modifier.testTag(CARD_CONTENT_TEST),
+            text = content,
+            maxLines = MAX_TWO_LINES,
+            fontSize = CONTENT_FONT_SIZE,
+            color = CONTENT_COLOR
+        )
     }
 }
 
 // tags 컴포넌트 생성 함수
 @Composable
-fun CardTags (tags: List<String>) {
+private fun CardTags (modifier: Modifier, tags: List<String>) {
     if (tags.isNotEmpty() && tags.size <= 5) {
         FlowRow(
+            modifier = modifier.testTag(CARD_TAGS_TEST),
             verticalArrangement = Arrangement.spacedBy(4.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             for (tag in tags) {
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = Color(TAG_BACKGROUND_COLOR),
-                            shape = RoundedCornerShape(45.dp)
-                        )
-                ) {
-                    Text(
-                        tag,
-                        modifier = Modifier
-                            .padding(6.dp),
-                        fontSize = 10.sp,
-                        color = Color(TAG_TEXT_COLOR))
-                }
+                TagComponent(Modifier, tag)
             }
         }
     }
 }
 
+@Composable
+private fun TagComponent(modifier: Modifier, tag: String) {
+    Box(
+        modifier = modifier
+            .background(
+                color = Color(TAG_BACKGROUND_COLOR),
+                shape = RoundedCornerShape(45.dp)
+            )
+    ) {
+        Text(
+            tag,
+            modifier = modifier
+                .padding(6.dp),
+            fontSize = 10.sp,
+            color = Color(TAG_TEXT_COLOR))
+    }
+}
+
 // icon & writer 컴포넌트 생성 함수
 @Composable
-fun CardWriter(writer: String) {
+private fun CardWriterProfile(modifier: Modifier ,writer: String) {
     Row(
+        modifier = modifier.testTag(CARD_WRITER_TEST),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = Icons.Default.Person,
-            contentDescription = null,
-            tint = Color.White,
-            modifier = Modifier
-                .size(25.dp, 25.dp)
-                .clip(CircleShape)
-                .border(width = 2.dp, color = Color.Gray)
-                .background(color = Color.Gray),
-        )
-        Text(
-            writer,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1,
-            fontSize = 14.sp,
-            color = Color(WRITER_TEXT_COLOR)
-        )
+        CardWriterIcon(Modifier)
+        CardWriterNickname(writer)
     }
+}
+
+@Composable
+private fun CardWriterIcon(modifier: Modifier) {
+    Icon(
+        imageVector = Icons.Default.Person,
+        contentDescription = null,
+        tint = Color.White,
+        modifier = modifier
+            .size(25.dp, 25.dp)
+            .clip(CircleShape)
+            .border(width = 2.dp, color = Color.Gray)
+            .background(color = Color.Gray),
+    )
+}
+
+@Composable
+private fun CardWriterNickname(writer: String) {
+    Text(
+        writer,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 1,
+        fontSize = 14.sp,
+        color = Color(WRITER_TEXT_COLOR)
+    )
 }

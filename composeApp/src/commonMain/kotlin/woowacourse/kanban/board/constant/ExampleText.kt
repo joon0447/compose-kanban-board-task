@@ -1,15 +1,5 @@
-package woowacourse.kanban.board
+package woowacourse.kanban.board.constant
 
-// color palette
-const val BOARD_BACKGROUND_COLOR = 0xffFFFFFF
-const val CARD_BACKGROUND_COLOR = 0xffE5E7EB
-const val TITLE_COLOR = 0xff101828
-const val DESCRIPTION_COLOR = 0xff4A5565
-const val TAG_BACKGROUND_COLOR = 0xffF3F4F6
-const val TAG_TEXT_COLOR = 0xff364153
-const val WRITER_TEXT_COLOR = 0xff364153
-
-// example text
 const val EXAMPLE_TITLE = "LazyColumn 컴포넌트 구현"
 const val EXAMPLE_CONTENT = "세로 스크롤 가능한 리스트 컴포넌트를 만들고 성능 최적화를 적용합니다."
 const val EXAMPLE_WRITER = "다이노"
