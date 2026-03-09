@@ -23,51 +23,71 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.awt.SystemColor.text
+import woowacourse.kanban.board.domain.KanbanBoardCardData
 
 /**
+ * KanbanBoardCard UI입니다.
+ * @param kanbanBoardCardData KanbanCard의 데이터입니다.
  * @param modifier Modifier
- * @param headerText 카드 제목으로, 너무 길면 ...로 표시됩니다.
- * @param content 카드 본문으로, 너무 길면 ...로 표시됩니다.
- * @param tags 카드 태그로, 최대 5개까지 입력할 수 있습니다.
- * @param accountName 카드 계정 이름으로, 너무 길면 ...로 표시됩니다.
  */
 @Composable
 fun KanbanBoardCard(
+    kanbanBoardCardData: KanbanBoardCardData,
     modifier: Modifier = Modifier,
-    headerText: String,
-    content: String,
-    tags: List<String> = listOf(),
-    accountName: String,
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier
             .background(color = Color(0xffffffff), shape = RoundedCornerShape(16.dp))
             .border(color = Color(0xffE5E7Eb), width = 1.dp, shape = RoundedCornerShape(16.dp))
             .padding(all = 17.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        CardHeader(headerText = headerText, modifier = Modifier.fillMaxWidth())
-        CardContent(contentText = content, modifier = Modifier.fillMaxWidth())
-        CardTagsSection(tags = tags)
+
+        CardTitle(
+            title = kanbanBoardCardData.title,
+            modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Kanban Card Title" },
+        )
+
+        if (kanbanBoardCardData.hasContent()) {
+            CardContent(
+                modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Kanban Card Content" },
+                content = kanbanBoardCardData.content
+            )
+        }
+
+        if (kanbanBoardCardData.hasTag()) CardTagsSection(
+            tags = kanbanBoardCardData.tags
+        )
+
         HorizontalDivider()
-        CardAccountInfo(modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth(), accountName = accountName)
+
+        CardAccountInfo(
+            accountName = kanbanBoardCardData.accountName,
+            modifier = Modifier
+                .padding(vertical = 10.dp)
+                .fillMaxWidth()
+                .semantics { contentDescription = "Kanban Card Account Info" },
+            accountImage = Icons.Default.AccountCircle, /* 추후 api나, Async 등으로 이미지를 불러올 경우 수정할 예정. */
+        )
     }
 }
 
 /**
  * 최대 1줄까지 표시되는 Card의 Header입니다.
  * @param modifier Modifier
- * @param headerText 카드 제목으로, 너무 길면...로 표시됩니다.
+ * @param title 카드 제목으로, 너무 길면...로 표시됩니다.
  */
 @Composable
-private fun CardHeader(modifier: Modifier = Modifier, headerText: String) {
+private fun CardTitle(title: String, modifier: Modifier = Modifier) {
     Text(
-        text = headerText,
+        text = title,
         fontSize = 16.sp,
         fontWeight = FontWeight.Medium,
         letterSpacing = 0.3.sp,
@@ -78,25 +98,36 @@ private fun CardHeader(modifier: Modifier = Modifier, headerText: String) {
     )
 }
 
+@Preview(backgroundColor = 0xffffffff, showBackground = true)
+@Composable
+fun CardTitlePreview() {
+    CardTitle(title = "Card Title")
+}
+
+
 /**
  * 최대 2줄까지 표시되는 Card의 Content입니다.
  * @param modifier Modifier
- * @param contentText 카드 본문으로, 너무 길면 ...로 표시됩니다.
+ * @param content 카드 본문으로, 너무 길면 ...로 표시됩니다.
  */
 @Composable
-private fun CardContent(modifier: Modifier = Modifier, contentText: String) {
-    if (contentText.isNotEmpty()) {
-        Text(
-            text = contentText,
-            fontSize = 14.sp,
-            letterSpacing = 0.15.sp,
-            lineHeight = 20.sp,
-            fontWeight = FontWeight.W400,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            modifier = modifier,
-        )
-    }
+private fun CardContent(modifier: Modifier = Modifier, content: String) {
+    Text(
+        text = content,
+        fontSize = 14.sp,
+        letterSpacing = 0.15.sp,
+        lineHeight = 20.sp,
+        fontWeight = FontWeight.W400,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis,
+        modifier = modifier,
+    )
+}
+
+@Preview(backgroundColor = 0xffffffff, showBackground = true)
+@Composable
+fun CardContentPreview() {
+    CardContent(content = "Card Content")
 }
 
 /**
@@ -105,51 +136,54 @@ private fun CardContent(modifier: Modifier = Modifier, contentText: String) {
  */
 @Composable
 private fun CardTagsSection(tags: List<String> = listOf()) {
-    val visible = tags.take(5).map { it.take(5) }
-    if (visible.isEmpty()) return
-
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        visible.forEach { TagChip(chipText = it) }
+    ) {/* TagModifer, SectionModifier로 분리할까 고민했으나, 우선 현 방식대로 수정. */
+        tags.forEach { TagChip(modifier = Modifier.semantics { contentDescription = "Kanban Card Tag" }, chipContent = it) }
     }
 }
 
 /**
  * CardTag의 Chip입니다.
  * @param modifier Modifier
- * @param text TagChip의 내용입니다.
+ * @param chipContent TagChip의 내용입니다.
  */
 @Composable
-private fun TagChip(modifier: Modifier = Modifier, chipText: String) {
+private fun TagChip(modifier: Modifier = Modifier, chipContent: String) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .background(color = Color(0xfff3f4f6), shape = RoundedCornerShape(16.dp))
             .padding(vertical = 5.dp, horizontal = 8.dp),
     ) {
-        Text(text = chipText, fontWeight = FontWeight.W400, fontSize = 12.sp)
+        Text(text = chipContent, fontWeight = FontWeight.W400, fontSize = 12.sp)
     }
+}
+
+@Preview(backgroundColor = 0xffffffff, showBackground = true)
+@Composable
+fun TagChipPreview() {
+    TagChip(chipContent = "Tag")
 }
 
 /**
  * CardAccountInfo 섹션입니다.
  * @param modifier Modifier
- * @param iconImage 프로필 아이콘입니다. 기본 값은 Icons.Default.AccountCircle입니다.
+ * @param accountImage 프로필 아이콘입니다. 기본 값은 Icons.Default.AccountCircle입니다.
  * @param accountName 카드 계정 이름으로, 너무 길면 ...로 표시됩니다.
  */
 @Composable
 private fun CardAccountInfo(
-    modifier: Modifier = Modifier,
-    iconImage: ImageVector = Icons.Default.AccountCircle,
     accountName: String,
+    modifier: Modifier = Modifier,
+    accountImage: ImageVector = Icons.Default.AccountCircle,
 ) {
     Row(
         modifier = modifier,
     ) {
         Icon(
-            imageVector = iconImage,
+            imageVector = accountImage,
             contentDescription = "프로필 아이콘",
             modifier = Modifier.size(24.dp),
             tint = Color(0xff838383),
@@ -161,4 +195,10 @@ private fun CardAccountInfo(
             overflow = TextOverflow.Ellipsis,
         )
     }
+}
+
+@Preview(backgroundColor = 0xffffffff, showBackground = true)
+@Composable
+fun CardAccountInfoPreview() {
+    CardAccountInfo(accountName = "Test")
 }
