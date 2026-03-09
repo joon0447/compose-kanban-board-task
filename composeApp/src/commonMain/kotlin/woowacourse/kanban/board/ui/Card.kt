@@ -1,0 +1,177 @@
+package woowacourse.kanban.board.ui
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import woowacourse.kanban.board.domain.Task
+
+@Composable
+fun Card(task: Task, modifier: Modifier = Modifier.Companion) {
+    Column(
+        modifier = modifier
+            .width(286.dp)
+            .clip(shape = RoundedCornerShape(10.dp))
+            .background(Color.Companion.White)
+            .border(
+                width = 1.dp,
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
+                color = Color(0xffe5e7eb)
+            )
+            .padding(start = 17.dp, top = 17.dp, end = 17.dp, bottom = 1.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Title(task.title)
+        if (task.cardDescription.isNotBlank()) CardDescription(task.cardDescription)
+        if (task.chips.isNotEmpty()) {
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                task.chips.forEach { chip ->
+                    Chip(chip)
+                }
+            }
+        }
+        User(name = task.user)
+    }
+}
+
+@Composable
+private fun Title(title: String, modifier: Modifier = Modifier.Companion) {
+    Text(
+        modifier = modifier,
+        text = title,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Companion.W500,
+        color = Color(0xff101828),
+        maxLines = 1,
+        overflow = TextOverflow.Companion.Ellipsis,
+    )
+}
+
+@Composable
+private fun CardDescription(description: String, modifier: Modifier = Modifier.Companion) {
+    Text(
+        modifier = modifier,
+        text = description,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Companion.W400,
+        color = Color(0xff4a5565),
+        maxLines = 2,
+        overflow = TextOverflow.Companion.Ellipsis,
+    )
+}
+
+@Composable
+private fun Chip(content: String, modifier: Modifier = Modifier.Companion) {
+    Text(
+        text = content.take(5),
+        fontSize = 12.sp,
+        fontWeight = FontWeight.Companion.W400,
+        color = Color(0xff364153),
+        modifier = modifier.clip(shape = androidx.compose.foundation.shape.RoundedCornerShape(100.dp))
+            .background(Color(0xffF3F4F6))
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+
+        )
+}
+
+@Composable
+private fun User(name: String, modifier: Modifier = Modifier.Companion) {
+    Box(modifier = modifier) {
+        HorizontalDivider(
+            modifier = Modifier.Companion.align(Alignment.Companion.TopCenter),
+            thickness = 1.dp,
+            color = Color(0xfff3f4f6),
+        )
+
+        Row(
+            modifier = Modifier.Companion.padding(vertical = 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.Companion.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier.Companion.size(24.dp).clip(CircleShape)
+                    .background(color = Color.Companion.White)
+                    .border(width = 2.dp, color = Color(0xff838383), shape = CircleShape),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AccountBox,
+                    contentDescription = "profile image",
+                    tint = Color(0xff838383),
+                    modifier = Modifier.Companion.clip(CircleShape).requiredSize(size = 33.dp),
+                )
+            }
+            Text(
+                text = name,
+                fontWeight = FontWeight.Companion.W500,
+                fontSize = 14.sp,
+                color = Color(0xff364153),
+                maxLines = 1,
+                overflow = TextOverflow.Companion.Ellipsis,
+            )
+        }
+    }
+}
+
+internal class CardPreviewProvider : PreviewParameterProvider<Task> {
+    override val values = sequenceOf(
+        Task(
+            title = "LazyColumn 컴포넌트 구현",
+            cardDescription = "세로 스크롤 가능한 리스트 컴포넌트를 만들고 성능 최적화를 적용합니다.",
+            chips = listOf("컴포넌트", "성능"),
+            user = "다이노",
+        ),
+        Task(
+            title = "LazyColumn 컴포넌트 구현",
+            chips = listOf("컴포넌트", "성능"),
+            user = "다이노",
+        ),
+        Task(
+            title = "LazyColumn 컴포넌트 구현",
+            user = "다이노",
+        ),
+        Task(
+            title = "LazyColumn 컴포넌트 구현",
+            cardDescription = "너무너무너무 긴 설명은 두 줄까지만 노출하고 말줄임표로 처리합니다 두 줄까지만 노출하고 말줄임표로 처리합니다",
+            chips = listOf("너무너무", "긴 태그", "최대로", "5자까지", "5개제한"), // 도메인 규칙에 맞게 최대 5자로 수정
+            user = "너무너무너무 긴 담당자도 한 줄",
+        ),
+    )
+}
+
+@Composable
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
+private fun CardPreview(@PreviewParameter(CardPreviewProvider::class) task: Task) {
+    Card(
+        task = task, // 개별 파라미터 대신 Task 객체 하나만 전달한다.
+        modifier = Modifier.Companion.padding(16.dp),
+    )
+}
