@@ -1,4 +1,4 @@
-package woowacourse.kanban.board.taskcard
+package woowacourse.kanban.board.ui.home.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -31,40 +31,18 @@ import androidx.compose.ui.unit.sp
 import kanbanboard.composeapp.generated.resources.Res
 import kanbanboard.composeapp.generated.resources.profile_image
 import org.jetbrains.compose.resources.painterResource
+import woowacourse.kanban.board.data.datasource.tasksData
+import woowacourse.kanban.board.domain.entity.Tag
+import woowacourse.kanban.board.domain.entity.Task
 
-class TaskCardPreviewParameterProvider : PreviewParameterProvider<TaskCardDto> {
-    override val values = sequenceOf(
-        TaskCardDto(
-            title = "LazyColumn 컴포넌트 구현",
-            content = "세로 스크롤 가능한 리스트 컴포넌트를 만들고 성능 최적화를 적용합니다.",
-            tags = listOf("컴포넌트", "성능"),
-            author = "다이노"
-        ),
-        TaskCardDto(
-            title = "LazyColumn 컴포넌트 구현",
-            content = "",
-            tags = listOf("컴포넌트", "성능"),
-            author = "다이노"
-        ),
-        TaskCardDto(
-            title = "LazyColumn 컴포넌트 구현",
-            content = "세로 스크롤 가능한 리스트 컴포넌트를 만들고 성능 최적화를 적용합니다.",
-            tags = listOf(),
-            author = "다이노"
-        ),
-        TaskCardDto(
-            title = "LazyColumn 컴포넌트 구현",
-            content = "",
-            tags = listOf(),
-            author = "다이노"
-        )
-    )
+private class TaskCardPreviewParameterProvider : PreviewParameterProvider<Task> {
+    override val values = tasksData.asSequence()
 }
 
 @Composable
 @Preview(showBackground = true)
 fun TaskCard(
-    @PreviewParameter(TaskCardPreviewParameterProvider::class) taskCard: TaskCardDto
+    @PreviewParameter(TaskCardPreviewParameterProvider::class) task: Task
 ) {
     Card(
         colors = CardDefaults.cardColors(
@@ -77,11 +55,11 @@ fun TaskCard(
             modifier = Modifier.padding(17.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Title(title = taskCard.title)
-            if (taskCard.content.isNotEmpty()) Content(content = taskCard.content)
-            if (taskCard.tags.isNotEmpty()) Tags(tags = taskCard.tags)
+            Title(title = task.title)
+            if (task.content.isNotEmpty()) Content(content = task.content)
+            if (task.tags.isNotEmpty()) Tags(tags = task.tags)
             HorizontalDivider(color = Color(0xFFE5E7EB))
-            Profile(author = taskCard.author)
+            Profile(author = task.author)
         }
     }
 }
@@ -111,7 +89,7 @@ fun Content(content: String) {
 }
 
 @Composable
-fun Tags(tags: List<String>) {
+fun Tags(tags: List<Tag>) {
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -124,7 +102,7 @@ fun Tags(tags: List<String>) {
                     .padding(horizontal = 8.dp),
             ) {
                 Text(
-                    text = tag,
+                    text = tag.name,
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xFF364153),
                     fontSize = 12.sp,

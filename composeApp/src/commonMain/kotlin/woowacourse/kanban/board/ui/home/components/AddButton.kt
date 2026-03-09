@@ -1,4 +1,4 @@
-package woowacourse.kanban.board.component
+package woowacourse.kanban.board.ui.home.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
@@ -45,6 +45,6 @@ fun AddButton(
 
 @Preview
 @Composable
-fun AddButtonPreview() {
+private fun AddButtonPreview() {
     AddButton(modifier = Modifier, onValueChange = {})
 }
