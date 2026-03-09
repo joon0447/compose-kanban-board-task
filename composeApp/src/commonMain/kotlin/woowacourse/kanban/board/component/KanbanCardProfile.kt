@@ -22,27 +22,35 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun KanbanCardProfile(crewName: String, modifier: Modifier = Modifier, crewImage: DrawableResource? = null) {
-    val imageModifier = Modifier.size(24.dp).clip(CircleShape)
+fun KanbanCardProfile(crewName: String, crewImage: DrawableResource, modifier: Modifier = Modifier) {
+    KanbanCardProfileLayout(crewName = crewName, modifier = modifier) {
+        Image(
+            painter = painterResource(resource = crewImage),
+            contentDescription = "사용자 이미지",
+            modifier = Modifier.size(24.dp).clip(CircleShape),
+        )
+    }
+}
 
+@Composable
+fun KanbanCardProfile(crewName: String, modifier: Modifier = Modifier) {
+    KanbanCardProfileLayout(crewName = crewName, modifier = modifier) {
+        Icon(
+            imageVector = Icons.Default.AccountCircle,
+            contentDescription = "기본 이미지",
+            modifier = Modifier.size(24.dp).clip(CircleShape),
+        )
+    }
+}
+
+@Composable
+private fun KanbanCardProfileLayout(crewName: String, modifier: Modifier = Modifier, imageContent: @Composable () -> Unit) {
     Row(
         modifier = modifier.padding(end = 20.dp, bottom = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        if (crewImage == null) {
-            Icon(
-                imageVector = Icons.Default.AccountCircle,
-                contentDescription = "기본 이미지",
-                modifier = imageModifier,
-            )
-        } else {
-            Image(
-                painter = painterResource(resource = crewImage),
-                contentDescription = "사용자 이미지",
-                modifier = imageModifier,
-            )
-        }
+        imageContent()
 
         Text(
             text = crewName,

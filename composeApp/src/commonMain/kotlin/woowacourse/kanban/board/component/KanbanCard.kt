@@ -23,21 +23,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.DrawableResource
+import woowacourse.kanban.board.domain.KanbanTask
 
-/**
- * @param tags 최대 5개까지만 표시되는 태그 리스트입니다. 5개를 초과하면 상위 5개만 렌더링됩니다.
- */
 @Composable
 fun KanbanCard(
     title: String,
     crewName: String,
     modifier: Modifier = Modifier,
     tags: List<String> = emptyList(),
-    content: String = "",
+    description: String? = null,
     crewImage: DrawableResource? = null,
 ) {
-    require(title.isNotBlank()) { "KanbanCard의 title은 비어 있을 수 없습니다." }
-
     Column(
         modifier = modifier
             .width(286.dp)
@@ -54,9 +50,9 @@ fun KanbanCard(
             overflow = TextOverflow.Ellipsis,
         )
 
-        if (content.isNotBlank()) {
+        if (!description.isNullOrBlank()) {
             Text(
-                text = content,
+                text = description,
                 fontSize = 14.sp,
                 color = Color.DarkGray,
                 maxLines = 2,
@@ -70,10 +66,16 @@ fun KanbanCard(
 
         HorizontalDivider(thickness = Dp.Hairline, color = Color.LightGray)
 
-        KanbanCardProfile(
-            crewName = crewName,
-            crewImage = crewImage,
-        )
+        if (crewImage != null) {
+            KanbanCardProfile(
+                crewName = crewName,
+                crewImage = crewImage,
+            )
+        } else {
+            KanbanCardProfile(
+                crewName = crewName,
+            )
+        }
     }
 }
 
@@ -83,54 +85,85 @@ private fun KanbanCardTags(tags: List<String>) {
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        tags
-            .take(5)
-            .forEach { tag -> TagChip(name = tag) }
+        tags.forEach { tag -> TagChip(name = tag) }
     }
 }
 
-@Preview(device = Devices.DESKTOP)
+@Preview(device = Devices.TABLET)
 @Composable
-private fun KanbanCardOptionalPreview() {
+private fun KanbanCardPreview_Optional() {
+    val commonTitle = "LazyColumn 컴포넌트 구현"
+    val commonDescription = "세로 스크롤 가능한 리스트 컴포넌트를 만들고 성능 최적화를 적용합니다."
     val tags = listOf("컴포넌트", "성능")
+    val commonCrewName = "아키"
+
     Row(
         modifier = Modifier
             .padding(12.dp)
             .background(Color.White),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        KanbanCard(
-            title = "LazyColumn 컴포넌트 구현",
-            crewName = "바드",
+        val fullTask = KanbanTask(
+            title = commonTitle,
+            description = commonDescription,
             tags = tags,
-            content = "세로 스크롤 가능한 리스트 컴포넌트를 만들고 성능 최적화를 적용합니다.",
+            crewName = commonCrewName,
         )
         KanbanCard(
-            title = "LazyColumn 컴포넌트 구현",
-            crewName = "바드",
+            title = fullTask.title,
+            crewName = fullTask.crewName,
+            tags = fullTask.visibleTags,
+            description = fullTask.description,
+        )
+
+        val noDescriptionTask = KanbanTask(
+            title = commonTitle,
             tags = tags,
+            crewName = commonCrewName,
         )
         KanbanCard(
-            title = "LazyColumn 컴포넌트 구현",
-            crewName = "바드",
-            content = "세로 스크롤 가능한 리스트 컴포넌트를 만들고 성능 최적화를 적용합니다.",
+            title = noDescriptionTask.title,
+            crewName = noDescriptionTask.crewName,
+            tags = noDescriptionTask.visibleTags,
+        )
+
+        val noTagsTask = KanbanTask(
+            title = commonTitle,
+            description = commonDescription,
+            crewName = commonCrewName,
         )
         KanbanCard(
-            title = "LazyColumn 컴포넌트 구현",
-            crewName = "바드",
+            title = noTagsTask.title,
+            crewName = noTagsTask.crewName,
+            description = noTagsTask.description,
+        )
+
+        val minimalTask = KanbanTask(
+            title = commonTitle,
+            crewName = commonCrewName,
+        )
+        KanbanCard(
+            title = minimalTask.title,
+            crewName = minimalTask.crewName,
         )
     }
 }
 
 @Preview
 @Composable
-private fun KanbanCardMaxPreview() {
+private fun KanbanCardPreview_Max() {
     Box(modifier = Modifier.padding(12.dp)) {
-        KanbanCard(
-            title = "너무너무 긴 제목은 한 줄까지만 노출합니다. 그렇습니다. 감사합니다.",
-            crewName = "바드바드바드바드바드바드바드바드바드바드바드바드바드바드",
+        val maxTask = KanbanTask(
+            title = "너무너무 긴 제목은 한 줄까지만 노출합니다".repeat(3),
+            description = "세로 스크롤 가능한 리스트 컴포넌트를 만들고 성능 최적화를 적용합니다.".repeat(3),
             tags = listOf("컴포넌트", "성능", "긴 태그", "최대로", "5자까지", "5개제한임.", "6개임"),
-            content = "세로 스크롤 가능한 리스트 컴포넌트를 만들고 성능 최적화를 적용합니다.".repeat(3),
+            crewName = "아키".repeat(10),
+        )
+        KanbanCard(
+            title = maxTask.title,
+            crewName = maxTask.crewName,
+            tags = maxTask.visibleTags,
+            description = maxTask.description,
         )
     }
 }
