@@ -33,7 +33,14 @@ fun TagChipGroup(
 private class TagChipGroupPreviewParameterProvider : PreviewParameterProvider<List<String>> {
     override val values = sequenceOf(
         listOf("태그", "태그", "안녕"),
-        listOf("안녕하세요요요", "안녕하세요우오", "반갑습니다아아", "호기심입니다", "5번이에요", "6번이건보이면안돼"),
+        listOf(
+            "안녕하세요요요",
+            "안녕하세요우오",
+            "반갑습니다아아",
+            "호기심입니다",
+            "5번이에요",
+            "6번이건보이면안돼",
+        ),
     )
 }
 

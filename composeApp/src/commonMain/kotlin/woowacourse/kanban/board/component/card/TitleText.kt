@@ -11,7 +11,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun TitleText(title: String, modifier: Modifier = Modifier) {
+fun TitleText(
+    title: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = title,
         fontSize = 16.sp,
